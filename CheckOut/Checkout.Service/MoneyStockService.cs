@@ -1,6 +1,7 @@
 ﻿using Checkout.Core.Extensions;
 using Checkout.Model;
 using Checkout.Repository;
+using Checkout.ViewModels;
 
 namespace Checkout.Service
 {
@@ -13,11 +14,13 @@ namespace Checkout.Service
             _iMoneyStockRepository = iMoneyStockRepository;
         }
 
-        public async Task<bool> AddToStockAsync(HungarianForint currency)
+        public async Task<bool> AddToStockAsync(HungarianForintVM currencyVM)
         {
-            currency.ThrowIfNull();
+            currencyVM.ThrowIfNull();
 
-            return await _iMoneyStockRepository.AddToStockAsync(currency);
+            var model = currencyVM.GetModel();
+
+            return await _iMoneyStockRepository.AddToStockAsync(model);
         }
 
         public async Task<HungarianForint> GetStockAsync()

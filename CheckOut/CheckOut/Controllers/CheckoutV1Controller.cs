@@ -1,4 +1,5 @@
 ﻿using Checkout.Service;
+using Checkout.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CheckOut.Controllers
@@ -26,8 +27,16 @@ namespace CheckOut.Controllers
         }
 
         [HttpPost]
-        public IActionResult Stock(int id)
+        public async Task<IActionResult> Stock(HungarianForintVM stock)
         {
+            if(stock == null || !ModelState.IsValid)
+            {
+                BadRequest("Invalid parameter!");
+            }
+
+            var result = await _iMoneyStockService.AddToStockAsync(stock);
+
+
             return Ok();
         }
 

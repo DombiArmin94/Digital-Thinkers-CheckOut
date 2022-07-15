@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Checkout.Model\Checkout.Model.csproj" />
     <ProjectReference Include="..\Checkout.Repository\Checkout.Repository.csproj" />
     <ProjectReference Include="..\Checkout.Service\Checkout.Service.csproj" />
+    <ProjectReference Include="..\Checkout.ViewModels\Checkout.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
