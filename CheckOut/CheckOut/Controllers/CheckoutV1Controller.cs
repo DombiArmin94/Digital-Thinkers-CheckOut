@@ -1,6 +1,7 @@
 ﻿using Checkout.Service;
 using Checkout.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CheckOut.Controllers
 {
@@ -23,20 +24,33 @@ namespace CheckOut.Controllers
         {
             var stock = await _iMoneyStockService.GetStockAsync();
 
+            _logger.LogInformation("[Get] Stock returned with model:{Stock}", JsonSerializer.Serialize(stock));
+
             return Ok(stock);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Stock([FromBody]HungarianForintVM stock)
+        public async Task<IActionResult> Stock([FromBody] HungarianForintVM stock)
         {
-            if(stock == null || !ModelState.IsValid)
+            if (stock == null || !ModelState.IsValid)
             {
                 BadRequest("Invalid parameter!");
             }
 
+            _logger.LogInformation("[Post] Stock attempting to stock up with model:{Stock}", JsonSerializer.Serialize(stock));
+
             var result = await _iMoneyStockService.AddToStockAsync(stock);
 
-            return Ok(result);
+            if (result)
+            {
+                _logger.LogInformation("[Post] Stock success");
+                return Ok();
+            }
+            else
+            {
+                _logger.LogError("[Post] Stock failed to update!");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to update!");
+            }
         }
 
         [HttpPost]
@@ -47,13 +61,17 @@ namespace CheckOut.Controllers
                 BadRequest("Invalid parameter!");
             }
 
+            _logger.LogInformation("[Post] Checkout attempting checkout with model:{Checkout}", JsonSerializer.Serialize(checkout));
+
             var (change, erorrMessage) = await _iMoneyStockService.Checkout(checkout);
 
-            if(change == null)
+            if (change == null)
             {
+                _logger.LogWarning("[Post] Checkout failed to checkout with reason:{Checkout}", erorrMessage);
                 return BadRequest(erorrMessage);
             }
 
+            _logger.LogInformation("[Post] Checkout success with Model; {Change}", JsonSerializer.Serialize(change));
             return Ok(change);
         }
     }

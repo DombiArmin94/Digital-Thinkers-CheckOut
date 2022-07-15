@@ -44,35 +44,35 @@ namespace Checkout.ViewModels
 
         public HungarianForintVM(HungarianForint currency)
         {
-            Five = currency.Five;
-            Ten = currency.Ten;
-            Twenty = currency.Twenty;
-            Fifty = currency.Fifty;
-            Hundred = currency.Hundred;
-            TwoHundred = currency.TwoHundred;
-            FiveHundred = currency.FiveHundred;
-            Thousand = currency.Thousand;
-            TwoThousand = currency.TwoThousand;
-            FiveThousand = currency.FiveThousand;
-            TenThousand = currency.TenThousand;
-            TwentyThousand = currency.TwentyThousand;
+            Five = currency.GetCount(5);
+            Ten = currency.GetCount(10);
+            Twenty = currency.GetCount(20);
+            Fifty = currency.GetCount(50);
+            Hundred = currency.GetCount(100);
+            TwoHundred = currency.GetCount(200);
+            FiveHundred = currency.GetCount(500);
+            Thousand = currency.GetCount(1000);
+            TwoThousand = currency.GetCount(2000);
+            FiveThousand = currency.GetCount(5000);
+            TenThousand = currency.GetCount(10000);
+            TwentyThousand = currency.GetCount(20000);
         }
         public HungarianForint GetModel()
         {
             var model = new HungarianForint();
 
-            model.Five = Five;
-            model.Ten = Ten;
-            model.Twenty = Twenty;
-            model.Fifty = Fifty;
-            model.Hundred = Hundred;
-            model.TwoHundred = TwoHundred;
-            model.FiveHundred = FiveHundred;
-            model.Thousand = Thousand;
-            model.TwoThousand = TwoThousand;
-            model.FiveThousand = FiveThousand;
-            model.TenThousand = TenThousand;
-            model.TwentyThousand = TwentyThousand;
+            model.AddCount(5, Five);
+            model.AddCount(10, Ten);
+            model.AddCount(20, Twenty);
+            model.AddCount(50, Fifty);
+            model.AddCount(100, Hundred);
+            model.AddCount(200, TwoHundred);
+            model.AddCount(500, FiveHundred);
+            model.AddCount(1000, Thousand);
+            model.AddCount(2000, TwoThousand);
+            model.AddCount(5000, FiveThousand);
+            model.AddCount(10000, TenThousand);
+            model.AddCount(20000, TwentyThousand);
 
             return model;
         }
