@@ -15,6 +15,14 @@ namespace Checkout.Core.Extensions
             }
         }
 
+        public static void ThrowIfLessThanZero(this int source, [CallerArgumentExpression("source")] string parameterName = null, string errorMessage = null)
+        {
+            if (source < 0)
+            {
+                Throw<ArgumentOutOfRangeException>(parameterName, $"{parameterName} cannot be less than zero", errorMessage);
+            }
+        }
+
         private static void Throw<T>(string parameterName, string defaultMessage, string? errorMessage = null) where T : ArgumentException
         {
             if (string.IsNullOrWhiteSpace(errorMessage))

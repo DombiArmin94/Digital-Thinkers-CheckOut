@@ -57,7 +57,7 @@ namespace Checkout.ViewModels
             TwoThousand = currency.TwoThousand;
             FiveThousand = currency.FiveThousand;
             TenThousand = currency.TenThousand;
-            TwoThousand = currency.TwoThousand;
+            TwentyThousand = currency.TwentyThousand;
         }
         public HungarianForint GetModel()
         {
@@ -74,7 +74,7 @@ namespace Checkout.ViewModels
             model.TwoThousand = TwoThousand;
             model.FiveThousand = FiveThousand;
             model.TenThousand = TenThousand;
-            model.TwoThousand = TwoThousand;
+            model.TwentyThousand = TwentyThousand;
 
             return model;
         }

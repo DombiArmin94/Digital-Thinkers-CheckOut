@@ -29,5 +29,37 @@ namespace Checkout.Service
             var vm = new HungarianForintVM(stock);
             return vm;
         }
+
+        public async Task<(HungarianForintVM change, string errorMessage)> Checkout(CheckoutVM checkoutVM)
+        {
+            checkoutVM.ThrowIfNull();
+            checkoutVM.InsertedMoney.ThrowIfNull();
+
+            var insertedMoney = checkoutVM.InsertedMoney.GetModel();
+            if (checkoutVM.Price > insertedMoney.Sum)
+            {
+                return (null, "Not enough money Inserted");
+            }
+
+            var stock = await _iMoneyStockRepository.GetStockAsync();
+            stock.FillUpStock(insertedMoney);
+
+            var changeSum = insertedMoney.Sum - checkoutVM.Price;
+            if(changeSum == 0)
+            {
+                return (new HungarianForintVM(), null);
+            }
+
+            var (change, errorMessage) = stock.CalculateChange(changeSum);
+
+            if(change != null)
+            {
+                return (new HungarianForintVM(change), errorMessage);
+            }
+            else
+            {
+                return (null, errorMessage);
+            }
+        }
     }
 }

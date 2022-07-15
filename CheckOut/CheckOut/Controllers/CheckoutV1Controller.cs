@@ -40,14 +40,21 @@ namespace CheckOut.Controllers
         }
 
         [HttpPost]
-        public IActionResult Checkout([FromBody] CheckoutVM checkout)
+        public async Task<IActionResult> Checkout([FromBody] CheckoutVM checkout)
         {
             if (checkout == null || !ModelState.IsValid)
             {
                 BadRequest("Invalid parameter!");
             }
 
-            return Ok();
+            var (change, erorrMessage) = await _iMoneyStockService.Checkout(checkout);
+
+            if(change == null)
+            {
+                return BadRequest(erorrMessage);
+            }
+
+            return Ok(change);
         }
     }
 }
