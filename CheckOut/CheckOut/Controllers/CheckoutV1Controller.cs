@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Checkout.Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CheckOut.Controllers
 {
@@ -7,17 +8,21 @@ namespace CheckOut.Controllers
     [Route("api/v1/[action]")]
     public class CheckoutV1Controller : ControllerBase
     {
-        protected readonly ILogger _logger;
+        private readonly ILogger _logger;
+        private readonly IMoneyStockService _iMoneyStockService;
 
-        public CheckoutV1Controller(ILogger<CheckoutV1Controller> logger)
+        public CheckoutV1Controller(IMoneyStockService iMoneyStockService, ILogger<CheckoutV1Controller> logger)
         {
             _logger = logger;
+            _iMoneyStockService = iMoneyStockService;
         }
 
         [HttpGet]
-        public IActionResult Stock()
+        public async Task<IActionResult> Stock()
         {
-            return Ok();
+            var stock = await _iMoneyStockService.GetStockAsync();
+
+            return Ok(stock);
         }
 
         [HttpPost]
