@@ -27,7 +27,7 @@ namespace CheckOut.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Stock(HungarianForintVM stock)
+        public async Task<IActionResult> Stock([FromBody]HungarianForintVM stock)
         {
             if(stock == null || !ModelState.IsValid)
             {
@@ -36,13 +36,17 @@ namespace CheckOut.Controllers
 
             var result = await _iMoneyStockService.AddToStockAsync(stock);
 
-
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Checkout()
+        public IActionResult Checkout([FromBody] CheckoutVM checkout)
         {
+            if (checkout == null || !ModelState.IsValid)
+            {
+                BadRequest("Invalid parameter!");
+            }
+
             return Ok();
         }
     }

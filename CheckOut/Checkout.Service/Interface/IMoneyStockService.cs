@@ -5,7 +5,7 @@ namespace Checkout.Service
 {
     public interface IMoneyStockService
     {
-        Task<HungarianForint> GetStockAsync();
+        Task<HungarianForintVM> GetStockAsync();
         Task<bool> AddToStockAsync(HungarianForintVM currencyVM);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Checkout.Model;
+﻿using Checkout.Core.Extensions;
+using Checkout.Model;
 using System.Text.Json.Serialization;
 
 namespace Checkout.ViewModels
@@ -39,6 +40,25 @@ namespace Checkout.ViewModels
         [JsonPropertyName("20000")]
         public int TwentyThousand { get; set; }
 
+        public HungarianForintVM() { }
+
+        public HungarianForintVM(HungarianForint currency)
+        {
+            currency.ThrowIfNull();
+
+            Five = currency.Five;
+            Ten = currency.Ten;
+            Twenty = currency.Twenty;
+            Fifty = currency.Fifty;
+            Hundred = currency.Hundred;
+            TwoHundred = currency.TwoHundred;
+            FiveHundred = currency.FiveHundred;
+            Thousand = currency.Thousand;
+            TwoThousand = currency.TwoThousand;
+            FiveThousand = currency.FiveThousand;
+            TenThousand = currency.TenThousand;
+            TwoThousand = currency.TwoThousand;
+        }
         public HungarianForint GetModel()
         {
             var model = new HungarianForint();

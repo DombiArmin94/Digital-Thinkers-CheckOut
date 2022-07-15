@@ -23,9 +23,11 @@ namespace Checkout.Service
             return await _iMoneyStockRepository.AddToStockAsync(model);
         }
 
-        public async Task<HungarianForint> GetStockAsync()
+        public async Task<HungarianForintVM> GetStockAsync()
         {
-            return await _iMoneyStockRepository.GetStockAsync();
+            var stock = await _iMoneyStockRepository.GetStockAsync();
+            var vm = new HungarianForintVM(stock);
+            return vm;
         }
     }
 }

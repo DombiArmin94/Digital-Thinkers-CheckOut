@@ -17,4 +17,12 @@
     <ProjectReference Include="..\Checkout.ViewModels\Checkout.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\dombi\source\repos\Digital-Thinkers-CheckOut\CheckOut\CheckOut\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\dombi\source\repos\Digital-Thinkers-CheckOut\CheckOut\CheckOut\.editorconfig" />
+  </ItemGroup>
+
 </Project>
