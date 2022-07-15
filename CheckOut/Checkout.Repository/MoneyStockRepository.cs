@@ -14,9 +14,17 @@ namespace Checkout.Repository
 
         public async Task<bool> AddToStockAsync(HungarianForint additionalStock)
         {
-            additionalStock.ThrowIfNull();
-
             _stock.FillUpStock(additionalStock);
+
+            //simulating async DB calls
+            await Task.Delay(1);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateStock(HungarianForint additionalStock)
+        {
+            _stock = additionalStock;
 
             //simulating async DB calls
             await Task.Delay(1);
@@ -28,8 +36,8 @@ namespace Checkout.Repository
         {
             //simulating async DB calls
             await Task.Delay(1);
+
             return _stock;
         }
-
     }
 }

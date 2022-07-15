@@ -52,9 +52,11 @@ namespace Checkout.Service
 
             var (change, errorMessage) = stock.CalculateChange(changeSum);
 
-            if(change != null)
+            await _iMoneyStockRepository.UpdateStock(stock);
+
+            if (change != null)
             {
-                return (new HungarianForintVM(change), errorMessage);
+                return (new HungarianForintVM(change.Value), errorMessage);
             }
             else
             {

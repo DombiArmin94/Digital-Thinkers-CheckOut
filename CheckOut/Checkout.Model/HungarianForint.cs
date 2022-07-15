@@ -4,7 +4,7 @@ using Checkout.Core.Extensions;
 
 namespace Checkout.Model
 {
-    public class HungarianForint
+    public struct HungarianForint
     {
         private int _five;
         private int _ten;
@@ -216,7 +216,7 @@ namespace Checkout.Model
             TwentyThousand += additionalStock.TwentyThousand;
         }
 
-        public (HungarianForint change, string errorMessage) CalculateChange(int changeSum)
+        public (HungarianForint? change, string errorMessage) CalculateChange(int changeSum)
         {
             if(Sum < changeSum)
             {

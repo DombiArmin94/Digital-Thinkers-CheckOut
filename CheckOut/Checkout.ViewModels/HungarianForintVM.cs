@@ -44,8 +44,6 @@ namespace Checkout.ViewModels
 
         public HungarianForintVM(HungarianForint currency)
         {
-            currency.ThrowIfNull();
-
             Five = currency.Five;
             Ten = currency.Ten;
             Twenty = currency.Twenty;
