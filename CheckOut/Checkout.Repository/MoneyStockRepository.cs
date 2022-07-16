@@ -5,6 +5,7 @@ namespace Checkout.Repository
 {
     public class MoneyStockRepository : IMoneyStockRepository
     {
+        private readonly object StockLock = new object();
         private HungarianForint _stock;
 
         public MoneyStockRepository()
@@ -14,8 +15,11 @@ namespace Checkout.Repository
 
         public async Task<bool> AddToStockAsync(HungarianForint additionalStock)
         {
-            _stock.FillUpStock(additionalStock);
-
+            lock (StockLock)
+            {
+                _stock.FillUpStock(additionalStock);
+            }
+            
             //simulating async DB calls
             await Task.Delay(1);
 
@@ -24,7 +28,10 @@ namespace Checkout.Repository
 
         public async Task<bool> UpdateStock(HungarianForint additionalStock)
         {
-            _stock = additionalStock;
+            lock (StockLock)
+            {
+                _stock = additionalStock;
+            }       
 
             //simulating async DB calls
             await Task.Delay(1);
