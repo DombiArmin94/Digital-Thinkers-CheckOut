@@ -55,6 +55,7 @@ namespace Checkout.Repository
                 _HUFstock = additionalStock;
             }
             
+
             //simulating async DB calls
             await Task.Delay(1);
 
