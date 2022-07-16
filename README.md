@@ -31,6 +31,10 @@ Only accepts right parameters, throws correct errors, error filter works, correc
 
 So testing was done manually and mainly to check all inputs, and some edge case wrong inputs
 
+## Design Notes
+Repository implementation is just mocking a DB, data should not be stored like this. It was specified in the documentation, and I choose a different optional task.
+Had to ad locking, class copiing just to make it thread safe and consistent. Ideally DB would handle table locking and coping would not be necessary.
+
 ## Build/Run
 
 - Build the solution in Visual Studio
@@ -64,6 +68,8 @@ with json body
 200 Response : "true"
 
 You can check the Stock on the same url with [GET]
+![image](https://user-images.githubusercontent.com/109354456/179350308-0807372e-3304-47c8-b91d-a5b58a8db408.png)
+
 
 Also you can call http://localhost:22080/api/v1/Checkout
 with json body
@@ -83,8 +89,10 @@ with json body
 If for some reason the API cannot give change back it returns 400
 Reasons (Not enough money inserted, Not enough money in stock)
 
+![image](https://user-images.githubusercontent.com/109354456/179350323-4b9818ae-8d0f-4d50-a808-56fee4bc5c67.png)
+
 ## EUR Accepting
-NOTE: repository now returns the reference to the stock which could lead to problems but since this layer was always a mock and built in mind to later have DB implemented in the background, in later stages of development this issue will disappear (for now a quick solution would be to return the copy of stock)
+NOTE: repository now has to copy the the stock to a new reference to avoid consistency issues.
 
 - There is an Open PR for the changes to Accept EUR in checkout
 - This was seperated to a different branch because it is a breaking change (API json model changed)
@@ -143,7 +151,7 @@ In currencies if the bill, coin value does not correspond to the currency type -
 ## EUR accepting design
 Wanted to have a dynamic json endpoint for the API so json must declare which currency we are dealing with.
 If the type is not supported then through custom exception and exception filters we send back 400 response
-If the bill or coin provided in the json does not exist then we throw custom error and filter is to send back 400 response
+If the bill or coin provided in the json does not exist then we throw custom error and filter it to send back 400 response
 
-Tried to design the models so it will be easily scalable and adding new currency support will not brake the API endpoint
+Tried to design the models so it will be easily scalable and adding new currency support will not brake the API endpoint.
 In hindsight would have been better to just create a new CheckoutV2 with a route V2 http://localhost:22080/api/v2/Checkout to avoid API endpoint breaking change
