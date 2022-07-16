@@ -35,6 +35,8 @@ So testing was done manually and mainly to check all inputs, and some edge case 
 Repository implementation is just mocking a DB, data should not be stored like this. It was specified in the documentation, and I choose a different optional task.
 Had to ad locking, class copiing just to make it thread safe and consistent. Ideally DB would handle table locking and coping would not be necessary.
 
+EUR implemetation also has some improvement on the main app, like only accepting positive bills/coins on stock
+
 ## Build/Run
 
 - Build the solution in Visual Studio
@@ -118,6 +120,7 @@ NOTE: repository now has to copy the the stock to a new reference to avoid consi
 }
 
 Only HUF accepted otherwise 400 response
+If the amount is negative -> 400 response
 If a value is present in the json that is not HUF bill or coin -> 400 response
 
 [POST] Checkout
