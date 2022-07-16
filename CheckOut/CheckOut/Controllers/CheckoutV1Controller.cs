@@ -46,10 +46,12 @@ namespace CheckOut.Controllers
                 BadRequest("Cannot stock with negative amounts");
             }
 
-            if(stock.CurrencyType != Currencies.HUF.ToString())
+            if(stock.CurrencyType != Currencies.HUF.ToString() || stock.CurrencyType != Currencies.NONE.ToString())
             {
                 BadRequest("Stocking is only allowed with HUF");
             }
+
+            stock.CurrencyType = Currencies.HUF.ToString();
 
             _logger.LogInformation("[Post] Stock attempting to stock up with model:{Stock}", JsonSerializer.Serialize(stock));
 

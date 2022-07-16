@@ -6,6 +6,10 @@ namespace Checkout.Service
 {
     public class CurrencyConverterAPIService : ICurrencyConverterAPIService
     {
+        // This is not easily scalable
+        // Was done this way because the BaseCurrency is not changeable on a free acount
+        // If later we'd one to improve this functinality we need to consider a payed subscription or implement our own API
+
         private const double FEE = 0.95f;
         private const string API_KEY = "2559fbb69905423ebf140696f4fc42fc";
         public async Task<double> GetCurrencyRate(Currencies from, Currencies to)
