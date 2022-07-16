@@ -2,21 +2,25 @@
 using Checkout.Model;
 using Checkout.Repository;
 using Checkout.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace Checkout.Service
 {
     public class MoneyStockService : IMoneyStockService
     {
         private readonly IMoneyStockRepository _iMoneyStockRepository;
+        private readonly ICurrencyConverterAPIService _iCurrencyConverterAPIService;
+        private readonly ILogger _logger;
 
-        public MoneyStockService(IMoneyStockRepository iMoneyStockRepository)
+        public MoneyStockService(IMoneyStockRepository iMoneyStockRepository, ICurrencyConverterAPIService iCurrencyConverterAPIService, ILogger<MoneyStockService> logger)
         {
             _iMoneyStockRepository = iMoneyStockRepository;
+            _logger = logger;
         }
 
         public async Task<bool> AddToStockAsync(HungarianForintVM currencyVM)
         {
-            currencyVM.ThrowIfNull();
+            currencyVM.ThrowIfNull(logger: _logger);
 
             var model = currencyVM.GetModel();
 
@@ -32,8 +36,8 @@ namespace Checkout.Service
 
         public async Task<(HungarianForintVM change, string errorMessage)> Checkout(CheckoutVM checkoutVM)
         {
-            checkoutVM.ThrowIfNull();
-            checkoutVM.InsertedMoney.ThrowIfNull();
+            checkoutVM.ThrowIfNull(logger: _logger);
+            checkoutVM.InsertedMoney.ThrowIfNull(logger: _logger);
 
             var insertedMoney = checkoutVM.InsertedMoney.GetModel();
             if (checkoutVM.Price > insertedMoney.Sum)

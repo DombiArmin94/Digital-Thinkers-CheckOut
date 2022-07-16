@@ -1,15 +1,18 @@
 ﻿using Checkout.Core.Extensions;
 using Checkout.Model;
+using Microsoft.Extensions.Logging;
 
 namespace Checkout.Repository
 {
     public class MoneyStockRepository : IMoneyStockRepository
     {
         private HungarianForint _stock;
+        private readonly ILogger _logger;
 
-        public MoneyStockRepository()
+        public MoneyStockRepository(ILogger<MoneyStockRepository> logger)
         {
             _stock = new HungarianForint();
+            _logger = logger;
         }
 
         public async Task<bool> AddToStockAsync(HungarianForint additionalStock)

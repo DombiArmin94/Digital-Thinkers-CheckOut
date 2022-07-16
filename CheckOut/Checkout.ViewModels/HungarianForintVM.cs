@@ -40,6 +40,26 @@ namespace Checkout.ViewModels
         [JsonPropertyName("20000")]
         public int TwentyThousand { get; set; }
 
+        public bool IsPositive 
+        {
+            get
+            {
+                return Five >= 0 &&
+                    Ten >= 0 &&
+                    Twenty >= 0 &&
+                    Fifty >= 0 &&
+                    Hundred >= 0 &&
+                    TwoHundred >= 0 &&
+                    FiveHundred >= 0 &&
+                    Thousand >= 0 &&
+                    TwoThousand >= 0 &&
+                    FiveThousand >= 0 &&
+                    TenThousand >= 0 &&
+                    TwentyThousand >= 0;
+            } 
+        }
+
+
         public HungarianForintVM() { }
 
         public HungarianForintVM(HungarianForint currency)
@@ -75,6 +95,6 @@ namespace Checkout.ViewModels
             model.AddCount(20000, TwentyThousand);
 
             return model;
-        }
+        }    
     }
 }

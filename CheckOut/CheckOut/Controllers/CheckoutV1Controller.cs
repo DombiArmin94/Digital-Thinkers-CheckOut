@@ -1,4 +1,5 @@
-﻿using Checkout.Service;
+﻿using Checkout.Model.Enums;
+using Checkout.Service;
 using Checkout.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -37,6 +38,11 @@ namespace CheckOut.Controllers
                 BadRequest("Invalid parameter!");
             }
 
+            if (stock.IsPositive)
+            {
+                BadRequest("Cannot stock with negative amounts");
+            }
+
             _logger.LogInformation("[Post] Stock attempting to stock up with model:{Stock}", JsonSerializer.Serialize(stock));
 
             var result = await _iMoneyStockService.AddToStockAsync(stock);
@@ -56,19 +62,19 @@ namespace CheckOut.Controllers
         [HttpPost]
         public async Task<IActionResult> Checkout([FromBody] CheckoutVM checkout)
         {
-            if (checkout == null || !ModelState.IsValid)
+            if (checkout == null || !ModelState.IsValid || checkout.InsertedMoney == null)
             {
                 BadRequest("Invalid parameter!");
             }
 
             _logger.LogInformation("[Post] Checkout attempting checkout with model:{Checkout}", JsonSerializer.Serialize(checkout));
 
-            var (change, erorrMessage) = await _iMoneyStockService.Checkout(checkout);
+            var (change, errorMessage) = await _iMoneyStockService.Checkout(checkout);
 
             if (change == null)
             {
-                _logger.LogWarning("[Post] Checkout failed to checkout with reason:{Checkout}", erorrMessage);
-                return BadRequest(erorrMessage);
+                _logger.LogWarning("[Post] Checkout failed to checkout with reason:{Checkout}", errorMessage);
+                return BadRequest(errorMessage);
             }
 
             _logger.LogInformation("[Post] Checkout success with Model; {Change}", JsonSerializer.Serialize(change));

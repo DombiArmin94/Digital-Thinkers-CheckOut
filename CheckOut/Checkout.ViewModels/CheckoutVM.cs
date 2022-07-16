@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Checkout.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,8 @@ namespace Checkout.ViewModels
 
         [JsonPropertyName("price")]
         public int Price { get; set; }
+
+        [JsonPropertyName("currency")]
+        public Currencies Currency { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace BTS.API
             services.AddSingleton<IMoneyStockRepository, MoneyStockRepository>();
 
             services.AddScoped<IMoneyStockService, MoneyStockService>();
+            services.AddScoped<ICurrencyConverterAPIService, CurrencyConverterAPIService>();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
         }
