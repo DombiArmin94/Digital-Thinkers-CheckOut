@@ -4,8 +4,8 @@ namespace Checkout.Repository
 {
     public interface IMoneyStockRepository
     {
-        Task<HungarianForint> GetStockAsync();
-        Task<bool> UpdateStock(HungarianForint additionalStock);
-        Task<bool> AddToStockAsync(HungarianForint additionalStock);
+        Task<HUF> GetStockAsync();
+        Task<bool> UpdateStock(HUF additionalStock);
+        Task<bool> AddToStockAsync(BaseCurrency additionalStock);
     }
 }

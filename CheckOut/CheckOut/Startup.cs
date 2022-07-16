@@ -1,5 +1,6 @@
-﻿using Checkout.Service;
-using Checkout.Repository;
+﻿using Checkout.Repository;
+using Checkout.Service;
+using CheckOut.Filters;
 
 namespace BTS.API
 {
@@ -22,6 +23,10 @@ namespace BTS.API
             services.AddSingleton<IMoneyStockRepository, MoneyStockRepository>();
 
             services.AddScoped<IMoneyStockService, MoneyStockService>();
+            services.AddScoped<ICurrencyConverterAPIService, CurrencyConverterAPIService>();
+
+            services.AddScoped<InvalidCurrencyKeyExceptionFilter>();
+            services.AddScoped<UnsopportedCurrencyExceptionFilter>();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
         }

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="RestSharp" Version="108.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Checkout.Model\Checkout.Model.csproj" />
     <ProjectReference Include="..\Checkout.Repository\Checkout.Repository.csproj" />
     <ProjectReference Include="..\Checkout.ViewModels\Checkout.ViewModels.csproj" />

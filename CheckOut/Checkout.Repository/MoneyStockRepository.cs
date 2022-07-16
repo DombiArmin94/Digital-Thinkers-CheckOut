@@ -1,50 +1,86 @@
-﻿using Checkout.Core.Extensions;
-using Checkout.Model;
+﻿using Checkout.Model;
+using Checkout.Model.Exceptions;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Checkout.Repository
 {
     public class MoneyStockRepository : IMoneyStockRepository
     {
-        private readonly object StockLock = new object();
-        private HungarianForint _stock;
+        private readonly object HUFStockLock = new object();
+        private readonly object EURStockLock = new object();
+        private BaseCurrency _HUFstock;
+        private BaseCurrency _eurStock;
+        private readonly ILogger _logger;
 
-        public MoneyStockRepository()
+        public MoneyStockRepository(ILogger<MoneyStockRepository> logger)
         {
-            _stock = new HungarianForint();
+            _HUFstock = new HUF();
+            _eurStock = new EUR();
+            _logger = logger;
         }
 
-        public async Task<bool> AddToStockAsync(HungarianForint additionalStock)
+        public async Task<bool> AddToStockAsync(BaseCurrency additionalStock)
         {
-            lock (StockLock)
+            if (additionalStock.CurrencyType == Model.Enums.Currencies.HUF)
             {
-                _stock.FillUpStock(additionalStock);
+                lock (HUFStockLock)
+                {
+                    _HUFstock.FillUpStock(additionalStock);
+                }
+            }
+            else if (additionalStock.CurrencyType == Model.Enums.Currencies.EUR)
+            {
+                lock (EURStockLock)
+                {
+                    _eurStock.FillUpStock(additionalStock);
+                }
+            }
+            else
+            {
+                _logger.LogWarning("Could not add to stock!");
+                throw new UnsopportedCurrencyException();
+            }
+
+            //simulating async DB calls
+            await Task.Delay(1);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateStock(HUF additionalStock)
+        {
+            lock (HUFStockLock)
+            {
+                _HUFstock = additionalStock;
             }
             
+
             //simulating async DB calls
             await Task.Delay(1);
 
             return true;
         }
 
-        public async Task<bool> UpdateStock(HungarianForint additionalStock)
+        public async Task<HUF> GetStockAsync()
         {
-            lock (StockLock)
+            //simulating async DB calls
+            await Task.Delay(1);
+
+            return CopyStock();
+        }
+
+        // Make sure repository returns copy isntead of reference to avoid consistency problems
+        private HUF CopyStock()
+        {
+            var huf = new HUF();
+
+            foreach(var pair in _HUFstock)
             {
-                _stock = additionalStock;
-            }       
+                huf.AddCount(pair.Key, pair.Value);
+            }
 
-            //simulating async DB calls
-            await Task.Delay(1);
-
-            return true;
-        }
-
-        public async Task<HungarianForint> GetStockAsync()
-        {
-            //simulating async DB calls
-            await Task.Delay(1);
-
-            return _stock;
+            return huf;
         }
     }
 }
