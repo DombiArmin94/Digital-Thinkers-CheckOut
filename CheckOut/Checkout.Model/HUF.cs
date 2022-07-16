@@ -2,7 +2,7 @@
 {
     public class HUF : BaseCurrency
     {
-        public HUF()
+        public HUF() : base()
         {
             CurrencyType = Enums.Currencies.HUF;
             currency = new Dictionary<double, int>()

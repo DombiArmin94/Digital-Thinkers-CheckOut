@@ -1,13 +1,13 @@
 ﻿using Checkout.Model.Enums;
 using Checkout.Model.Exceptions;
+using System.Collections;
 
 namespace Checkout.Model
 {
-    public abstract class BaseCurrency
+    public abstract class BaseCurrency : IEnumerable<KeyValuePair<double, int>>
     {
         protected Dictionary<double, int> currency;
         public Currencies CurrencyType { get; set; }
-
         public double Sum
         {
             get
@@ -20,16 +20,20 @@ namespace Checkout.Model
                 return sum;
             }
         }
-        public IEnumerable<KeyValuePair<double, int>> Currency
-        {
-            get
-            {
-                foreach (var pair in currency)
-                {
-                    yield return pair;
-                }
-            }
 
+        public BaseCurrency() { }
+
+        public IEnumerator<KeyValuePair<double, int>> GetEnumerator()
+        {
+            foreach (var pair in currency)
+            {
+                yield return pair;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         public int GetCount(double key)
@@ -71,6 +75,5 @@ namespace Checkout.Model
                 throw new InvalidCurrencyKeyException();
             }
         }
-
     }
 }

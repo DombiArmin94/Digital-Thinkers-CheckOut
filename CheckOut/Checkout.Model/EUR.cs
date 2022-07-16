@@ -2,7 +2,7 @@
 {
     public class EUR : BaseCurrency
     {
-        public EUR()
+        public EUR() : base()
         {
             CurrencyType = Enums.Currencies.EUR;
             currency = new Dictionary<double, int>()

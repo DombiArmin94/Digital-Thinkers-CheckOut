@@ -34,7 +34,7 @@ namespace Checkout.ViewModels
         public CurrencyVM(HUF currency)
         {
             Currencies = new Dictionary<double, int>();
-            foreach (var pair in currency.Currency)
+            foreach (var pair in currency)
             {
                 Currencies.Add(pair.Key, pair.Value);
             }

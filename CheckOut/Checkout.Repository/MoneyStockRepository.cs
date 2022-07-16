@@ -1,6 +1,7 @@
 ﻿using Checkout.Model;
 using Checkout.Model.Exceptions;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Checkout.Repository
 {
@@ -54,7 +55,20 @@ namespace Checkout.Repository
             //simulating async DB calls
             await Task.Delay(1);
 
-            return (HUF)_HUFstock;
+            return CopyStock();
+        }
+
+        // Make sure repository returns copy isntead of reference to avoid consistency problems
+        private HUF CopyStock()
+        {
+            var huf = new HUF();
+
+            foreach(var pair in _HUFstock)
+            {
+                huf.AddCount(pair.Key, pair.Value);
+            }
+
+            return huf;
         }
     }
 }
