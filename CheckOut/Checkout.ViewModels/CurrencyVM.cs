@@ -1,5 +1,6 @@
 ﻿using Checkout.Model;
 using Checkout.Model.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Checkout.ViewModels
