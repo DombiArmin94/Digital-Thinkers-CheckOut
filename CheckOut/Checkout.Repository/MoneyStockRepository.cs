@@ -7,6 +7,8 @@ namespace Checkout.Repository
 {
     public class MoneyStockRepository : IMoneyStockRepository
     {
+        private readonly object HUFStockLock = new object();
+        private readonly object EURStockLock = new object();
         private BaseCurrency _HUFstock;
         private BaseCurrency _eurStock;
         private readonly ILogger _logger;
@@ -22,11 +24,17 @@ namespace Checkout.Repository
         {
             if (additionalStock.CurrencyType == Model.Enums.Currencies.HUF)
             {
-                _HUFstock.FillUpStock(additionalStock);
+                lock (HUFStockLock)
+                {
+                    _HUFstock.FillUpStock(additionalStock);
+                }
             }
             else if (additionalStock.CurrencyType == Model.Enums.Currencies.EUR)
             {
-                _eurStock.FillUpStock(additionalStock);
+                lock (EURStockLock)
+                {
+                    _eurStock.FillUpStock(additionalStock);
+                }
             }
             else
             {
@@ -42,8 +50,11 @@ namespace Checkout.Repository
 
         public async Task<bool> UpdateStock(HUF additionalStock)
         {
-            _HUFstock = additionalStock;
-
+            lock (HUFStockLock)
+            {
+                _HUFstock = additionalStock;
+            }
+            
             //simulating async DB calls
             await Task.Delay(1);
 
