@@ -1,4 +1,5 @@
-﻿using Checkout.Service;
+﻿using Checkout.Model.Enums;
+using Checkout.Service;
 using Checkout.ViewModels;
 using CheckOut.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,11 @@ namespace CheckOut.Controllers
             if (stock.IsPositive)
             {
                 BadRequest("Cannot stock with negative amounts");
+            }
+
+            if(stock.CurrencyType != Currencies.HUF.ToString())
+            {
+                BadRequest("Stocking is only allowed with HUF");
             }
 
             _logger.LogInformation("[Post] Stock attempting to stock up with model:{Stock}", JsonSerializer.Serialize(stock));
