@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Checkout.Core.Extensions
@@ -28,7 +25,7 @@ namespace Checkout.Core.Extensions
         {
             if (string.IsNullOrWhiteSpace(errorMessage))
             {
-                if(logger != null)
+                if (logger != null)
                 {
                     logger.LogError(defaultMessage);
                 }

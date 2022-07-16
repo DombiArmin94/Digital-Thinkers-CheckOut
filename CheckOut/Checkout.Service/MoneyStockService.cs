@@ -1,5 +1,7 @@
 ﻿using Checkout.Core.Extensions;
 using Checkout.Model;
+using Checkout.Model.Enums;
+using Checkout.Model.Exceptions;
 using Checkout.Repository;
 using Checkout.ViewModels;
 using Microsoft.Extensions.Logging;
@@ -15,10 +17,11 @@ namespace Checkout.Service
         public MoneyStockService(IMoneyStockRepository iMoneyStockRepository, ICurrencyConverterAPIService iCurrencyConverterAPIService, ILogger<MoneyStockService> logger)
         {
             _iMoneyStockRepository = iMoneyStockRepository;
+            _iCurrencyConverterAPIService = iCurrencyConverterAPIService;
             _logger = logger;
         }
 
-        public async Task<bool> AddToStockAsync(HungarianForintVM currencyVM)
+        public async Task<bool> AddToStockAsync(CurrencyVM currencyVM)
         {
             currencyVM.ThrowIfNull(logger: _logger);
 
@@ -27,44 +30,59 @@ namespace Checkout.Service
             return await _iMoneyStockRepository.AddToStockAsync(model);
         }
 
-        public async Task<HungarianForintVM> GetStockAsync()
+        public async Task<CurrencyVM> GetStockAsync()
         {
             var stock = await _iMoneyStockRepository.GetStockAsync();
-            var vm = new HungarianForintVM(stock);
+            var vm = new CurrencyVM(stock);
             return vm;
         }
 
-        public async Task<(HungarianForintVM change, string errorMessage)> Checkout(CheckoutVM checkoutVM)
+        public async Task<(CurrencyVM change, string errorMessage)> Checkout(CheckoutVM checkoutVM)
         {
             checkoutVM.ThrowIfNull(logger: _logger);
             checkoutVM.InsertedMoney.ThrowIfNull(logger: _logger);
 
             var insertedMoney = checkoutVM.InsertedMoney.GetModel();
-            if (checkoutVM.Price > insertedMoney.Sum)
+            var insertedSum = await GetInsertedMoneySumInHuf(insertedMoney);
+            if (checkoutVM.Price > insertedSum)
             {
                 return (null, "Not enough money Inserted");
             }
 
+            await _iMoneyStockRepository.AddToStockAsync(insertedMoney);
             var stock = await _iMoneyStockRepository.GetStockAsync();
-            stock.FillUpStock(insertedMoney);
 
-            var changeSum = insertedMoney.Sum - checkoutVM.Price;
-            if(changeSum == 0)
+            var changeSum = insertedSum - checkoutVM.Price;
+            if (changeSum == 0)
             {
-                return (new HungarianForintVM(), null);
+                return (new CurrencyVM(), null);
             }
 
             var (change, errorMessage) = stock.CalculateChange(changeSum);
 
             await _iMoneyStockRepository.UpdateStock(stock);
 
-            if (change != null)
+            return (new CurrencyVM(change), errorMessage);
+        }
+
+        private async Task<int> GetInsertedMoneySumInHuf(BaseCurrency currency)
+        {
+            var sum = currency.Sum;
+
+            if (currency.CurrencyType == Currencies.HUF)
             {
-                return (new HungarianForintVM(change.Value), errorMessage);
+                return (int)sum;
+            }
+            else if (currency.CurrencyType == Currencies.EUR)
+            {
+                var rate = await _iCurrencyConverterAPIService.GetCurrencyRate(Currencies.EUR, Currencies.HUF);
+                sum = sum * rate;
+
+                return (int)sum;
             }
             else
             {
-                return (null, errorMessage);
+                throw new UnsopportedCurrencyException();
             }
         }
     }

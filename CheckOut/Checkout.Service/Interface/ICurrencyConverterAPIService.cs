@@ -4,6 +4,6 @@ namespace Checkout.Service
 {
     public interface ICurrencyConverterAPIService
     {
-        Task<float> GetCurrencyRate(Currencies from, Currencies to);
+        Task<double> GetCurrencyRate(Currencies from, Currencies to);
     }
 }

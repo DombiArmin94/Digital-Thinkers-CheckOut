@@ -6,15 +6,15 @@ namespace Checkout.Service
 {
     public class CurrencyConverterAPIService : ICurrencyConverterAPIService
     {
-        private const float FEE = 0.95f;
+        private const double FEE = 0.95f;
         private const string API_KEY = "2559fbb69905423ebf140696f4fc42fc";
-        public async Task<float> GetCurrencyRate(Currencies from, Currencies to)
+        public async Task<double> GetCurrencyRate(Currencies from, Currencies to)
         {
             var client = new RestClient("https://api.currencyfreaks.com/");
             var request = new RestRequest($"/latest?apikey={API_KEY}&symbols={from},{to}", Method.Get);
             var response = await client.ExecuteAsync<CurrencyData>(request);
 
-            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return response?.Data?.Currencies.GetRate(from, to) ?? 0;
             }
@@ -34,13 +34,13 @@ namespace Checkout.Service
         private class CurrencyRate
         {
             [JsonPropertyName("HUF")]
-            public float HUF { get; set; }
+            public double HUF { get; set; }
             [JsonPropertyName("EUR")]
-            public float EUR { get; set; }
+            public double EUR { get; set; }
 
-            public float GetRate(Currencies from, Currencies to)
+            public double GetRate(Currencies from, Currencies to)
             {
-                if(from == to)
+                if (from == to)
                 {
                     return 1;
                 }

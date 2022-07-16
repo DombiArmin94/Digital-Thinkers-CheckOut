@@ -1,23 +1,37 @@
-﻿using Checkout.Core.Extensions;
-using Checkout.Model;
+﻿using Checkout.Model;
+using Checkout.Model.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Checkout.Repository
 {
     public class MoneyStockRepository : IMoneyStockRepository
     {
-        private HungarianForint _stock;
+        private BaseCurrency _HUFstock;
+        private BaseCurrency _eurStock;
         private readonly ILogger _logger;
 
         public MoneyStockRepository(ILogger<MoneyStockRepository> logger)
         {
-            _stock = new HungarianForint();
+            _HUFstock = new HUF();
+            _eurStock = new EUR();
             _logger = logger;
         }
 
-        public async Task<bool> AddToStockAsync(HungarianForint additionalStock)
+        public async Task<bool> AddToStockAsync(BaseCurrency additionalStock)
         {
-            _stock.FillUpStock(additionalStock);
+            if (additionalStock.CurrencyType == Model.Enums.Currencies.HUF)
+            {
+                _HUFstock.FillUpStock(additionalStock);
+            }
+            else if (additionalStock.CurrencyType == Model.Enums.Currencies.EUR)
+            {
+                _eurStock.FillUpStock(additionalStock);
+            }
+            else
+            {
+                _logger.LogWarning("Could not add to stock!");
+                throw new UnsopportedCurrencyException();
+            }
 
             //simulating async DB calls
             await Task.Delay(1);
@@ -25,9 +39,9 @@ namespace Checkout.Repository
             return true;
         }
 
-        public async Task<bool> UpdateStock(HungarianForint additionalStock)
+        public async Task<bool> UpdateStock(HUF additionalStock)
         {
-            _stock = additionalStock;
+            _HUFstock = additionalStock;
 
             //simulating async DB calls
             await Task.Delay(1);
@@ -35,12 +49,12 @@ namespace Checkout.Repository
             return true;
         }
 
-        public async Task<HungarianForint> GetStockAsync()
+        public async Task<HUF> GetStockAsync()
         {
             //simulating async DB calls
             await Task.Delay(1);
 
-            return _stock;
+            return (HUF)_HUFstock;
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Checkout.Model.Enums;
-using Checkout.Service;
+﻿using Checkout.Service;
 using Checkout.ViewModels;
+using CheckOut.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -9,6 +9,8 @@ namespace CheckOut.Controllers
     [Produces("application/json")]
     [ApiController]
     [Route("api/v1/[action]")]
+    [ServiceFilter(typeof(InvalidCurrencyKeyExceptionFilter))]
+    [ServiceFilter(typeof(UnsopportedCurrencyExceptionFilter))]
     public class CheckoutV1Controller : ControllerBase
     {
         private readonly ILogger _logger;
@@ -31,7 +33,7 @@ namespace CheckOut.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Stock([FromBody] HungarianForintVM stock)
+        public async Task<IActionResult> Stock([FromBody] CurrencyVM stock)
         {
             if (stock == null || !ModelState.IsValid)
             {
@@ -50,7 +52,7 @@ namespace CheckOut.Controllers
             if (result)
             {
                 _logger.LogInformation("[Post] Stock success");
-                return Ok();
+                return Ok("successful stock!");
             }
             else
             {
